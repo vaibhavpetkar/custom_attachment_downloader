@@ -1,19 +1,26 @@
 <% if @issue.attachments.any? %>
   <% if @issue.attachments.count == 1 %>
+    <!-- If there's only one attachment, show a direct download button -->
     <%= link_to 'Download', download_attachments_issue_path(@issue, attachments: [@issue.attachments.first.id]), method: :post %>
   <% else %>
+    <!-- If there are multiple attachments, show the checkboxes and download option -->
     <form id="attachments-form" action="<%= download_attachments_issue_path(@issue) %>" method="POST">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      
+      <!-- Select All Checkbox -->
       <%= check_box_tag 'select_all', 'all', false, id: 'select_all' %>
       <label for="select_all">Select All</label>
+
       <ul>
         <% @issue.attachments.each do |attachment| %>
           <li>
-            <%= check_box_tag 'attachments[]', attachment.id, false %>
+            <!-- Checkboxes for each attachment -->
+            <%= check_box_tag 'attachments[]', attachment.id, false, class: 'attachment-checkbox' %>
             <%= attachment.filename %>
           </li>
         <% end %>
       </ul>
+      
       <%= submit_tag 'Download Selected', id: 'download-selected' %>
     </form>
   <% end %>
